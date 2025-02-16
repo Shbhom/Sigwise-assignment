@@ -1,9 +1,15 @@
-# Sigwise Event Trigger Platform
+# Sigwise Event Trigger Platform 
+[live-demo](https://sigwise-assignment.onrender.com/)
 
 ## Overview
 
 The **Sigwise Event Trigger Platform** is a backend application that allows customers to create and manage event triggers. Triggers can be either **scheduled** (firing at a specified time or interval) or **API** (triggered by an external API call). When a trigger fires, an event is logged and the system automatically manages these logs: events remain active for 2 hours, are then archived for 46 additional hours, and finally are deleted after a total of 48 hours. The application also includes JWT-based authentication so that only registered users can create, view, or manage their triggers.
 
+test creds for live demo:
+```
+    email test@test.in
+    password: 12345678
+```
 ---
 
 ## Tech Stack
