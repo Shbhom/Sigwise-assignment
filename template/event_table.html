@@ -1,0 +1,27 @@
+<!-- templates/event_logs_table.html -->
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Trigger ID</th>
+      <th>Trigger Type</th>
+      <th>Payload</th>
+      <th>Is Manual Test?</th>
+      <th>Status</th>
+      <th>Created At</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for e in events %}
+    <tr>
+      <td>{{ e.id }}</td>
+      <td>{{ e.trigger_id }}</td>
+      <td>{{ e.trigger_type }}</td>
+      <td><pre>{{ e.payload | tojson(indent=2) }}</pre></td>
+      <td>{{ e.is_manual_test }}</td>
+      <td>{{ e.status }}</td>
+      <td>{{ e.created_at }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

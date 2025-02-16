@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sigwise Event Trigger Platform</title>
+  <style>
+    /* Basic resets and typography */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      line-height: 1.4;
+    }
+
+    /* Container for main content */
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      margin: 2rem auto;
+      background-color: #fff;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+    header, footer {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    header h1 {
+      margin-bottom: 0.5rem;
+    }
+
+    /* Headings */
+    h2 {
+      margin-top: 1.5rem;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 0.5rem;
+    }
+
+    /* Form styling */
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      background-color: #fafafa;
+      padding: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+    }
+    form div {
+      flex: 1 1 220px;
+      display: flex;
+      flex-direction: column;
+    }
+    form label {
+      font-weight: bold;
+      margin-bottom: 0.3rem;
+    }
+    form input[type="text"],
+    form select {
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    form button[type="submit"] {
+      align-self: flex-end;
+      padding: 0.5rem 1rem;
+      background-color: #2196f3;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    form button[type="submit"]:hover {
+      background-color: #1976d2;
+    }
+
+    /* Buttons */
+    button {
+      padding: 0.6rem 1rem;
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-bottom: 1rem;
+      transition: background-color 0.2s ease;
+    }
+    button:hover {
+      background-color: #388e3c;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+    }
+    table thead {
+      background-color: #f0f0f0;
+    }
+    table th,
+    table td {
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      text-align: left;
+      vertical-align: top;
+    }
+    table tr:hover {
+      background-color: #f9f9f9;
+    }
+    table pre {
+      margin: 0;
+    }
+
+    /* Layout sections */
+    section {
+      margin-bottom: 2rem;
+    }
+    .btn-group {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    footer p {
+      margin-top: 1rem;
+      color: #666;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Sigwise Event Trigger Platform</h1>
+  </header>
+
+  <div class="container">
+    <main>
+      <!-- Create Trigger Form -->
+      <section id="create-trigger">
+        <h2>Create Trigger</h2>
+        <form id="create-trigger-form">
+          <div>
+            <label for="type">Type:</label>
+            <select name="type" id="type">
+              <option value="scheduled">Scheduled</option>
+              <option value="api">API</option>
+            </select>
+          </div>
+          <div>
+            <label for="schedule_details">Schedule Details (JSON):</label>
+            <input 
+              type="text"
+              name="schedule_details"
+              id="schedule_details"
+              placeholder='{"run_at": "2025-02-15T14:00:00"}'
+              required
+            />
+          </div>
+          <div>
+            <label for="api_payload">API Payload (JSON):</label>
+            <input
+              type="text"
+              name="api_payload"
+              id="api_payload"
+              placeholder='{"key": "value"}'
+              required
+            />
+          </div>
+          <div>
+            <label for="expires_at">Expires At:</label>
+            <input
+              type="text"
+              name="expires_at"
+              id="expires_at"
+              placeholder="YYYY-MM-DDTHH:MM"
+              required
+            />
+          </div>
+          <div>
+            <label for="is_test">Test Trigger:</label>
+            <input type="checkbox" name="is_test" id="is_test" value="true" />
+          </div>
+          <button type="submit">Create Trigger</button>
+        </form>
+      </section>
+
+      <!-- Triggers Section -->
+      <section id="triggers">
+        <h2>Triggers</h2>
+        <button id="load-triggers-btn">Load Triggers</button>
+        <table id="triggers-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Type</th>
+              <th>Schedule Details</th>
+              <th>API Payload</th>
+              <th>Is Test</th>
+              <th>Created At</th>
+              <th>Expires At</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Filled dynamically by JS -->
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Event Logs Section -->
+      <section id="event-logs">
+        <h2>Event Logs</h2>
+        <div class="btn-group">
+          <button class="load-logs-btn" data-status="active">Show Active Logs</button>
+          <button class="load-logs-btn" data-status="archived">Show Archived Logs</button>
+          <button class="load-logs-btn" data-status="all">Show All Logs</button>
+        </div>
+        <table id="event-logs-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Trigger ID</th>
+              <th>Trigger Type</th>
+              <th>Payload</th>
+              <th>Manual Test?</th>
+              <th>Status</th>
+              <th>Created At</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Filled dynamically by JS -->
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Sigwise Event Trigger Platform</p>
+  </footer>
+
+  <script>
+    // -----------------------
+    // 1. Create Trigger
+    // -----------------------
+    const createTriggerForm = document.getElementById("create-trigger-form");
+    createTriggerForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      // Gather form data
+      const formData = new FormData(createTriggerForm);
+      const dataObj = {};
+      formData.forEach((value, key) => {
+        dataObj[key] = value;
+      });
+      // Convert schedule_details & api_payload to JSON objects if possible
+      try {
+        dataObj.schedule_details = JSON.parse(dataObj.schedule_details);
+      } catch (e) {
+        alert("Invalid JSON for schedule_details");
+        return;
+      }
+      try {
+        dataObj.api_payload = JSON.parse(dataObj.api_payload);
+      } catch (e) {
+        alert("Invalid JSON for api_payload");
+        return;
+      }
+
+      // Send POST request
+      try {
+        const resp = await fetch("/api/v1/triggers", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(dataObj)
+        });
+        if (!resp.ok) {
+          const errText = await resp.text();
+          throw new Error(errText);
+        }
+        alert("Trigger created successfully!");
+        createTriggerForm.reset();
+      } catch (error) {
+        console.error("Error creating trigger:", error);
+        alert("Error creating trigger. Check console for details.");
+      }
+    });
+
+    // -----------------------
+    // 2. Load Triggers
+    // -----------------------
+    const loadTriggersBtn = document.getElementById("load-triggers-btn");
+    loadTriggersBtn.addEventListener("click", loadTriggers);
+
+    async function loadTriggers() {
+      try {
+        const resp = await fetch("/api/v1/triggers", {
+          method: "GET"
+        });
+        if (!resp.ok) {
+          throw new Error("Failed to fetch triggers");
+        }
+        const triggers = await resp.json();
+        populateTriggersTable(triggers);
+      } catch (error) {
+        console.error("Error loading triggers:", error);
+      }
+    }
+
+    function populateTriggersTable(triggers) {
+      const tbody = document.querySelector("#triggers-table tbody");
+      tbody.innerHTML = ""; // clear existing rows
+      triggers.forEach((trigger) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${trigger.id}</td>
+          <td>${trigger.type}</td>
+          <td><pre>${JSON.stringify(trigger.schedule_details, null, 2)}</pre></td>
+          <td><pre>${JSON.stringify(trigger.api_payload, null, 2)}</pre></td>
+          <td>${trigger.is_test}</td>
+          <td>${trigger.created_at}</td>
+          <td>${trigger.expires_at}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // -----------------------
+    // 3. Load Event Logs
+    // -----------------------
+    const logButtons = document.querySelectorAll(".load-logs-btn");
+    logButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const status = btn.dataset.status;
+        loadEventLogs(status);
+      });
+    });
+
+    async function loadEventLogs(status) {
+      try {
+        const resp = await fetch(`/api/v1/event_logs?status=${status}`);
+        if (!resp.ok) {
+          throw new Error("Failed to fetch event logs");
+        }
+        const events = await resp.json();
+        populateEventLogsTable(events);
+      } catch (error) {
+        console.error("Error loading event logs:", error);
+      }
+    }
+
+    function populateEventLogsTable(events) {
+      const tbody = document.querySelector("#event-logs-table tbody");
+      tbody.innerHTML = ""; // clear existing rows
+      events.forEach((log) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${log.id}</td>
+          <td>${log.trigger_id}</td>
+          <td>${log.trigger_type}</td>
+          <td><pre>${JSON.stringify(log.payload, null, 2)}</pre></td>
+          <td>${log.is_manual_test}</td>
+          <td>${log.status}</td>
+          <td>${log.created_at}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+  </script>
+</body>
+</html>

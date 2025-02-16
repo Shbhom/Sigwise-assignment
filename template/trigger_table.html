@@ -1,0 +1,30 @@
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Type</th>
+      <th>Schedule Details</th>
+      <th>API Payload</th>
+      <th>Is Test</th>
+      <th>Created At</th>
+      <th>Expires At</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for t in triggers %}
+    <tr>
+      <td>{{ t.id }}</td>
+      <td>{{ t.type }}</td>
+      <td>
+        <pre>{{ t.schedule_details | tojson(indent=2) }}</pre>
+      </td>
+      <td>
+        <pre>{{ t.api_payload | tojson(indent=2) }}</pre>
+      </td>
+      <td>{{ t.is_test }}</td>
+      <td>{{ t.created_at }}</td>
+      <td>{{ t.expires_at }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
