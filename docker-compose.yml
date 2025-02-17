@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  web:
+    image: shubhom/sigwise-assignment:1.0
+    restart: always
+    depends_on:
+      - db
+    environment:
+      # Use the service name "db" as the hostname
+      POSTGRES_URL: "postgresql://root:root@db:5432/postgres"
+      RUNNING_ENV: "PROD"
+    ports:
+      - "8000:8000"
+
+volumes:
+  postgres_data:
+
