@@ -1,15 +1,16 @@
-# Sigwise Event Trigger Platform 
+# Sigwise Event Trigger Platform  
 [live-demo](https://sigwise-assignment.onrender.com/)
 
 ## Overview
 
 The **Sigwise Event Trigger Platform** is a backend application that allows customers to create and manage event triggers. Triggers can be either **scheduled** (firing at a specified time or interval) or **API** (triggered by an external API call). When a trigger fires, an event is logged and the system automatically manages these logs: events remain active for 2 hours, are then archived for 46 additional hours, and finally are deleted after a total of 48 hours. The application also includes JWT-based authentication so that only registered users can create, view, or manage their triggers.
 
-test creds for live demo:
+Test credentials for live demo:  
 ```
-    email test@test.in
-    password: 12345678
+    Email: test@test.in  
+    Password: 12345678
 ```
+
 ---
 
 ## Tech Stack
@@ -34,8 +35,8 @@ The application is built entirely using Python and relies on the following key p
 - **Jinja2:**  
   Used by FastAPI for rendering HTML templates for the UI.
 
-- **Docker:**  
-  Although not a Python package, Docker is used to containerize the application so that it can run reliably on any system without additional setup.
+- **Docker Compose Plugin:**  
+  Used to run both the FastAPI server and PostgreSQL in containers. (Note: please install the Docker Compose plugin and use `docker compose up -d` to run the application.)
 
 ---
 
@@ -61,10 +62,10 @@ The application is built entirely using Python and relies on the following key p
 ### Trigger Endpoints (`/api/v1/triggers`)
 
 - **POST /api/v1/triggers:**  
-  Creates a new trigger.  
-  - Input: A JSON body matching the `TriggerCreate` model (fields: type, structured schedule_details, api_payload, expires_at, is_test).  
-  - Authentication: Requires a valid JWT. The created trigger is associated with the current user (owner_id).  
-  - Behavior: For scheduled triggers, it validates that the run_at value (inside schedule_details) is in the future. If `is_test` is true, a test event is logged immediately; otherwise, APScheduler is used to schedule the trigger.
+  Creates a new trigger.
+  - **Input:** A JSON body matching the `TriggerCreate` model (fields: type, structured schedule_details, api_payload, expires_at, is_test).
+  - **Authentication:** Requires a valid JWT. The created trigger is associated with the current user (owner_id).
+  - **Behavior:** For scheduled triggers, it validates that the run_at value (inside schedule_details) is in the future. If `is_test` is true, a test event is logged immediately; otherwise, APScheduler is used to schedule the trigger.
 
 - **GET /api/v1/triggers:**  
   Returns all triggers for the authenticated user.
@@ -108,7 +109,7 @@ The application is built entirely using Python and relies on the following key p
   Runs at regular intervals to update event logs. Events that were created more than 2 hours ago (in IST) and are still marked as **ACTIVE** are updated to **ARCHIVED**.
 
 - **cleanup_archived_logs:**  
-  Also runs at regular intervals to delete event logs. Any log that has been in the database for more than 48 hours is removed from the database.
+  Runs at regular intervals to delete event logs. Any log that has been in the database for more than 48 hours is removed.
 
 Both jobs are configured to use IST (Indian Standard Time) for scheduling.
 
@@ -118,50 +119,43 @@ Both jobs are configured to use IST (Indian Standard Time) for scheduling.
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/yourusername/sigwise-assignment.git
-   cd sigwise-assignment
+   git clone https://github.com/Shbhom/Sigwise-assignment.git
+   cd Sigwise-assignment
    ```
 
-2. **Configuration:**
-   - Update `.env` with your PostgreSQL connection string (e.g., `"postgresql://user:password@localhost/dbname"`) and JWT-related settings (e.g., `JWT_SECRET`).
-   
-3. **Build and Run with Docker:**
-   - Build the Docker image:
-     ```bash
-     docker build -t sigwise-app .
-     ```
-   - Run the container:
-     ```bash
-     docker run -p 8000:8000 sigwise-app
-     ```
-   - This will start the FastAPI application on port 8000.
+2. **Running the Application with Docker Compose:**
+   Ensure you have the Docker Compose plugin installed. Then, simply run:
+   ```bash
+   docker compose up -d
+   ```
+   This command will start both the PostgreSQL container and the FastAPI server container. The FastAPI server is pre-built and deployed publicly, so there's no need to build the images locally.
 
-4. **Access the Application:**
+3. **Access the Application:**
    - Open your browser and go to `http://127.0.0.1:8000`.
-   - If not logged in, you'll be redirected to the login page at `/auth/login`.
-   - Use the login or registration pages to authenticate.
-
-5. **Swagger Documentation:**
-   - Visit `http://127.0.0.1:8000/docs` to view automatically generated API documentation.
+   - If not logged in, you will be redirected to the login page at `/auth/login`.
+   - The Swagger UI for API documentation is available at `http://127.0.0.1:8000/docs`.
 
 ---
 
 ## Prominent Tools & Packages Used
 
 - **FastAPI:**  
-  Used for its ease of setting up a fully asynchronous API with automatic Swagger UI generation and dependency injection patterns.
+  Chosen for its simplicity in setting up an asynchronous API with automatic Swagger documentation and support for dependency injection.
 
 - **SQLModel:**  
-  Provides an ORM layer with model validation and seamless integration with SQLAlchemy and Pydantic.
+  Provides an ORM layer that integrates SQLAlchemy and Pydantic, offering type-safe database interactions and model validation.
 
 - **APScheduler:**  
-  Handles background task scheduling for trigger execution and log management.
+  Manages background tasks, such as scheduling trigger executions and handling event log archiving and cleanup.
 
-- **Neovim (nvim):**
-  It's lightweight, highly configurable, and perfectly suited for my workflow, real reason is I'm a linux neckbeard, I user Arch BTW!!
+- **python-jose:**  
+  Used for JWT encoding and decoding, ensuring secure token-based authentication.
 
-- **ChatGPT:**
-  ChatGPT served as a senior developer mentor for resolving doubts and suggesting improvements when I encountered challenges. Although it doesn't always generate perfect code, it helped me find solutions and verify best practices, also it can write decent docs :) .
+- **psycopg2:**  
+  The PostgreSQL adapter for Python, enabling reliable interaction with a PostgreSQL database.
 
-- **DuckDuckGo:**
-  I used DuckDuckGo for quick, privacy-respecting searches on best practices and troubleshooting tips when setting up the various components of the stack, and I love its bangs.
+- **Jinja2:**  
+  Used for server-side HTML templating to render UI pages.
+
+- **Docker Compose Plugin:**  
+  Simplifies the process of running multiple containers (FastAPI and PostgreSQL) together. The command to launch the application is `docker compose up -d`.
